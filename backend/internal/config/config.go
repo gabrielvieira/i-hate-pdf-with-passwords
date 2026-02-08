@@ -7,7 +7,7 @@ type Config struct {
 
 func NewConfig() *Config {
 	return &Config{
-		UploadDir: "./uploads",
-		ResultDir: "./results",
+		UploadDir: "./upload",
+		ResultDir: "./result",
 	}
 }

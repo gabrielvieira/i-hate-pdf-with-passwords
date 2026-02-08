@@ -33,7 +33,7 @@ func (a *API) RegisterRoutes(r *gin.Engine) {
 	api := r.Group("/api/pdf")
 	{
 		api.POST("/upload", a.uploadPDF)
-		api.POST("/status", a.status)
+		api.GET("/status/:filename", a.status)
 		api.GET("/results/:filename", a.servePDF)
 	}
 }
@@ -99,7 +99,13 @@ func (a *API) servePDF(c *gin.Context) {
 }
 
 func (a *API) status(c *gin.Context) {
+	filename := c.Param("filename")
+	status, err := a.pdfManager.GetStatus(filename)
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"status": "ok",
+		"status": status,
 	})
 }

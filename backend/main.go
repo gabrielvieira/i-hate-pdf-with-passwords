@@ -17,7 +17,7 @@ func main() {
 		panic(err)
 	}
 	cfg := config.NewConfig()
-	pdfManager := pdf.NewPDFManager(logger)
+	pdfManager := pdf.NewPDFManager(logger, cfg)
 	// start processing queue
 	pdfManager.Start()
 	pdfAPI := api.NewAPI(cfg, pdfManager, logger)

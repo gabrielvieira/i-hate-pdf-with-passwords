@@ -2,6 +2,7 @@ package pdf
 
 import (
 	"fmt"
+	"i-hate-pdf-with-passwords/internal/config"
 	"sync"
 
 	"go.uber.org/zap"
@@ -17,14 +18,16 @@ type Manager struct {
 	fileStatuses map[string]string
 	processChan  chan string
 	logger       *zap.Logger
-	mu           sync.RWMutex // Add this
+	mu           sync.RWMutex
+	config       *config.Config
 }
 
-func NewPDFManager(logger *zap.Logger) *Manager {
+func NewPDFManager(logger *zap.Logger, config *config.Config) *Manager {
 	return &Manager{
 		fileStatuses: make(map[string]string),
 		processChan:  make(chan string, 5), // limit 10 simultaneous process
 		logger:       logger,
+		config:       config,
 	}
 }
 
@@ -58,13 +61,13 @@ func (m *Manager) GetStatus(filename string) (string, error) {
 
 func (m *Manager) process() {
 	for filename := range m.processChan {
-		password, err := CrackPassword(filename)
+		password, err := CrackPassword(m.config.UploadDir, filename)
 		if err != nil {
 			m.setStatus(filename, StatusFailed)
 			m.logger.Error("Failed to crack password", zap.String("filename", filename), zap.Error(err))
 			continue
 		}
-		err = DecryptPDF(filename, password)
+		err = DecryptPDF(m.config.UploadDir, m.config.ResultDir, filename, password)
 		if err != nil {
 			m.setStatus(filename, StatusFailed)
 			m.logger.Error("Failed to decrypt PDF", zap.String("filename", filename), zap.Error(err))
