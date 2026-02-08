@@ -73,13 +73,12 @@ func (a *API) uploadPDF(c *gin.Context) {
 	hash := sha256.Sum256(fileContent)
 	hashString := hex.EncodeToString(hash[:])
 
-	uploadsDir := "./uploads"
-	if err := os.MkdirAll(uploadsDir, 0755); err != nil {
+	if err := os.MkdirAll(a.config.UploadDir, 0755); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
 		return
 	}
 	filename := fmt.Sprintf("%s.pdf", hashString)
-	path := filepath.Join(uploadsDir, filename)
+	path := filepath.Join(a.config.UploadDir, filename)
 
 	if err := c.SaveUploadedFile(uploadedFile, path); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
@@ -96,7 +95,7 @@ func (a *API) uploadPDF(c *gin.Context) {
 func (a *API) servePDF(c *gin.Context) {
 	filename := c.Param("filename")
 	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
-	c.File(filepath.Join("./uploads", filename))
+	c.File(filepath.Join(a.config.ResultDir, filename))
 }
 
 func (a *API) status(c *gin.Context) {

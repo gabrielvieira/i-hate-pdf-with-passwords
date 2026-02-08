@@ -1,10 +1,13 @@
 package config
 
 type Config struct {
-	uploadDir string
-	resultDir string
+	UploadDir string
+	ResultDir string
 }
 
 func NewConfig() *Config {
-	return &Config{}
+	return &Config{
+		UploadDir: "./uploads",
+		ResultDir: "./results",
+	}
 }
