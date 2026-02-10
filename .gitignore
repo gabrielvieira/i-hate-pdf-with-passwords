@@ -35,3 +35,9 @@ backend/vendor/
 # test folders
 backend/upload/
 backend/result/
+
+# Frontend
+FE/node_modules/
+FE/dist/
+FE/.env
+FE/.env.local

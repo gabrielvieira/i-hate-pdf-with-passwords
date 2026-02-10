@@ -25,7 +25,7 @@ type Manager struct {
 func NewPDFManager(logger *zap.Logger, config *config.Config) *Manager {
 	return &Manager{
 		fileStatuses: make(map[string]string),
-		processChan:  make(chan string, 5), // limit 10 simultaneous process
+		processChan:  make(chan string, 5), // limit 5 simultaneous process
 		logger:       logger,
 		config:       config,
 	}
