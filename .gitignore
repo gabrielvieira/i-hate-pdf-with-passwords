@@ -37,7 +37,8 @@ backend/upload/
 backend/result/
 
 # Frontend
-FE/node_modules/
-FE/dist/
-FE/.env
-FE/.env.local
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.vite

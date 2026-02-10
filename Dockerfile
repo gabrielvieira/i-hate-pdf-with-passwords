@@ -2,9 +2,9 @@
 FROM node:22-alpine AS frontend-builder
 
 WORKDIR /app/FE
-COPY FE/package*.json ./
+COPY frontend/package*.json ./
 RUN npm install
-COPY FE/ ./
+COPY frontend/ ./
 RUN npm run build
 
 # Build stage for backend
