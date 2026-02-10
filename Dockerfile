@@ -2,6 +2,8 @@ FROM ubuntu:24.04
 
 # Avoid interactive prompts during build
 ENV DEBIAN_FRONTEND=noninteractive
+# go gin production mode
+ENV GIN_MODE=release
 
 # Update and install dependencies
 RUN apt-get update && apt-get install -y \
