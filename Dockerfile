@@ -1,3 +1,22 @@
+# Build stage for frontend
+FROM node:22-alpine AS frontend-builder
+
+WORKDIR /app/FE
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend/ ./
+RUN npm run build
+
+# Build stage for backend
+FROM golang:1.23-alpine AS backend-builder
+
+WORKDIR /app
+COPY backend/go.mod backend/go.sum ./
+RUN go mod download
+COPY backend/ ./
+RUN CGO_ENABLED=0 GOOS=linux go build -o i-hate-pdf-with-passwords .
+
+# Production stage
 FROM ubuntu:24.04
 
 # Avoid interactive prompts during build
@@ -30,12 +49,25 @@ RUN wget https://hashcat.net/files/hashcat-6.2.6.tar.gz && \
     cd .. && \
     rm hashcat-6.2.6.tar.gz
 
-# Set working directory
-WORKDIR /workspace
-
 # Verify installations
 RUN qpdf --version && \
     pdf2john --help && \
     hashcat --version
 
-CMD ["/bin/bash"]
+# Set working directory
+WORKDIR /app
+
+# Copy built backend binary
+COPY --from=backend-builder /app/i-hate-pdf-with-passwords ./backend/
+
+# Copy built frontend assets
+COPY --from=frontend-builder /app/FE/dist ./FE/dist
+
+# Create directories for uploads and results
+RUN mkdir -p /app/backend/upload /app/backend/result
+
+# Expose port
+EXPOSE 8080
+
+# Run the application
+CMD ["/app/backend/i-hate-pdf-with-passwords"]
