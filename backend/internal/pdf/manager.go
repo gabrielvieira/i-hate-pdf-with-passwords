@@ -52,6 +52,9 @@ func (m *Manager) AddToCrackQueue(filename string) string {
 }
 
 func (m *Manager) GetStatus(filename string) (string, error) {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	
 	status, ok := m.fileStatuses[filename]
 	if !ok {
 		return "", fmt.Errorf("status not found for file: %s", filename)
