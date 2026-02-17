@@ -38,10 +38,10 @@ func main() {
 	pdfAPI.RegisterRoutes(r)
 
 	// Serve static frontend files
-	r.Static("/assets", "../FE/dist/assets")
-	r.StaticFile("/vite.svg", "../FE/dist/vite.svg")
+	r.Static("/assets", "../frontend/dist/assets")
+	r.StaticFile("/vite.svg", "../frontend/dist/vite.svg")
 	r.NoRoute(func(c *gin.Context) {
-		c.File("../FE/dist/index.html")
+		c.File("../frontend/dist/index.html")
 	})
 
 	// TODO: graceful shutdown

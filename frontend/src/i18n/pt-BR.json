@@ -1,0 +1,64 @@
+{
+  "statusBadge": "desbloqueador de pdf — online",
+  "title": "Odeio pdf",
+  "titleAccent": "com senha",
+  "tagline": "força bruta em senhas numéricas de até 12 dígitos",
+  "tryAnother": "tentar outro arquivo",
+  "upload": {
+    "onlyPdf": "apenas arquivos PDF são aceitos",
+    "tooLarge": "o arquivo deve ter menos de 10mb",
+    "failed": "falha no envio",
+    "uploading": "enviando...",
+    "dropIt": "solte aqui.",
+    "dropHere": "solte seu pdf protegido aqui",
+    "orBrowse": "ou clique para procurar",
+    "selectFile": "selecionar arquivo",
+    "hint": "apenas pdf — máx 10mb"
+  },
+  "status": {
+    "cracking": "quebrando",
+    "crackingDescription": "executando ataque de dicionário e força bruta",
+    "progress": "progresso",
+    "complexityHint": "isso pode levar alguns minutos dependendo da complexidade da senha",
+    "crackedTitle": "senha quebrada.",
+    "crackedDescription": "seu pdf foi desbloqueado e está pronto para download",
+    "failedTitle": "falha na quebra.",
+    "failedDescription": "a senha era forte demais para nossa lista de palavras.",
+    "failedHint": "tente um arquivo diferente ou uma senha mais fraca."
+  },
+  "download": {
+    "downloading": "baixando...",
+    "downloadButton": "baixar pdf desbloqueado",
+    "uploadAnother": "enviar outro",
+    "failed": "falha no download"
+  },
+  "contact": {
+    "buttonLabel": "contato",
+    "openLabel": "abrir formulário de contato",
+    "close": "fechar formulário de contato",
+    "title": "fale conosco.",
+    "subtitle": "deixe uma mensagem — retornamos em breve.",
+    "fields": {
+      "name": "nome",
+      "email": "e-mail",
+      "message": "mensagem"
+    },
+    "placeholders": {
+      "name": "seu nome",
+      "email": "voce@exemplo.com",
+      "message": "o que você tem em mente?"
+    },
+    "errors": {
+      "nameRequired": "nome é obrigatório.",
+      "emailRequired": "e-mail é obrigatório.",
+      "emailInvalid": "insira um endereço de e-mail válido.",
+      "messageRequired": "mensagem é obrigatória."
+    },
+    "submit": "enviar mensagem",
+    "success": {
+      "title": "mensagem enviada.",
+      "description": "obrigado pelo contato — responderemos em breve.",
+      "sendAnother": "enviar outra"
+    }
+  }
+}

@@ -2,9 +2,266 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Custom properties ─────────────────────────────────────────────────────── */
+:root {
+  --color-bg:        #0a0a0f;
+  --color-surface:   #111118;
+  --color-surface-2: #1a1a28;
+  --color-border:    #2a2a3a;
+  --color-red:       #ff2d55;
+  --color-red-dim:   #c0213f;
+  --color-red-glow:  rgba(255, 45, 85, 0.25);
+  --color-green:     #00e676;
+  --color-green-glow: rgba(0, 230, 118, 0.2);
+  --color-text:      #f0f0f8;
+  --color-muted:     #6b7280;
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* ─── Background mesh grid ──────────────────────────────────────────────────── */
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(255, 45, 85, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 90%, rgba(255, 45, 85, 0.06) 0%, transparent 60%),
+    linear-gradient(rgba(255, 45, 85, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 45, 85, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  animation: mesh-shift 20s ease-in-out infinite alternate;
+}
+
+@keyframes mesh-shift {
+  0%   { background-position: 0% 0%, 100% 100%, 0 0, 0 0; }
+  100% { background-position: 5% 5%, 95% 95%, 0 0, 0 0; }
+}
+
+/* ─── Keyframe animations ───────────────────────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 15px var(--color-red-glow), 0 0 30px var(--color-red-glow); }
+  50%       { box-shadow: 0 0 25px var(--color-red-glow), 0 0 50px var(--color-red-glow), 0 0 80px rgba(255, 45, 85, 0.1); }
+}
+
+@keyframes pulse-green-glow {
+  0%, 100% { box-shadow: 0 0 15px var(--color-green-glow), 0 0 30px var(--color-green-glow); }
+  50%       { box-shadow: 0 0 25px var(--color-green-glow), 0 0 50px var(--color-green-glow), 0 0 80px rgba(0, 230, 118, 0.1); }
+}
+
+@keyframes scan {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+
+@keyframes flicker {
+  0%, 95%, 100% { opacity: 1; }
+  96%           { opacity: 0.85; }
+  97%           { opacity: 1; }
+  98%           { opacity: 0.9; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes success-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ─── Utility classes ───────────────────────────────────────────────────────── */
+.animate-fade-up {
+  animation: fade-up 0.4s ease-out both;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-pulse-green-glow {
+  animation: pulse-green-glow 2s ease-in-out infinite;
+}
+
+.animate-flicker {
+  animation: flicker 8s linear infinite;
+}
+
+.animate-success-pop {
+  animation: success-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ─── Scan bar ──────────────────────────────────────────────────────────────── */
+.scan-bar {
+  position: absolute;
+  inset-y: 0;
+  width: 20%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 45, 85, 0.6) 50%,
+    transparent 100%
+  );
+  animation: scan 1.6s ease-in-out infinite;
+}
+
+
+/* ─── Red gradient button ───────────────────────────────────────────────────── */
+.btn-red {
+  background: linear-gradient(135deg, #ff2d55 0%, #c0213f 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 0 0 0 transparent;
+}
+
+.btn-red:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(255, 45, 85, 0.4);
+}
+
+.btn-red:active:not(:disabled) {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.btn-red:focus-visible {
+  outline: 2px solid #ff2d55;
+  outline-offset: 3px;
+}
+
+.btn-red:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ─── Ghost button ──────────────────────────────────────────────────────────── */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  color: var(--color-text);
+  border-color: #4a4a5a;
+  transform: translateY(-1px);
+}
+
+.btn-ghost:focus-visible {
+  outline: 2px solid #ff2d55;
+  outline-offset: 3px;
+}
+
+.btn-ghost:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ─── Drop zone ─────────────────────────────────────────────────────────────── */
+.drop-zone {
+  border: 2px dashed var(--color-border);
+  border-radius: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  background: rgba(26, 26, 40, 0.5);
+}
+
+.drop-zone:hover,
+.drop-zone.dragging {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 1px var(--color-red), 0 0 30px var(--color-red-glow), inset 0 0 30px rgba(255, 45, 85, 0.04);
+  background: rgba(255, 45, 85, 0.04);
+}
+
+/* ─── Panel / card ──────────────────────────────────────────────────────────── */
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+/* ─── Upload panel responsive padding ───────────────────────────────────────── */
+.upload-panel-padding {
+  padding: 32px;
+}
+
+.drop-zone-label {
+  padding: 52px 24px;
+}
+
+@media (max-width: 400px) {
+  .upload-panel-padding {
+    padding: 20px 16px;
+  }
+
+  .drop-zone-label {
+    padding: 28px 16px;
+    gap: 14px;
+  }
+
+  .drop-zone-icon {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+/* ─── Contact modal animations ─────────────────────────────────────────────── */
+@keyframes backdrop-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modal-scale-in {
+  0%   { opacity: 0; transform: scale(0.92) translateY(8px); }
+  60%  { opacity: 1; transform: scale(1.02) translateY(-1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ─── Progress bar ──────────────────────────────────────────────────────────── */
+.progress-track {
+  background: var(--color-surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  height: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c0213f 0%, #ff2d55 50%, #ff6b85 100%);
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-shadow: 0 0 10px rgba(255, 45, 85, 0.6);
 }

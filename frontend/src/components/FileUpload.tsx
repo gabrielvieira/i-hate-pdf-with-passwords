@@ -1,8 +1,6 @@
 import { useCallback, useState } from 'react';
-import { Upload } from 'lucide-react';
-import { Button } from './ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Alert, AlertDescription } from './ui/alert';
+import { useTranslation } from 'react-i18next';
+import { Lock, FileWarning } from 'lucide-react';
 
 interface FileUploadProps {
   onUpload: (file: File) => Promise<void>;
@@ -10,16 +8,13 @@ interface FileUploadProps {
 }
 
 export function FileUpload({ onUpload, isUploading }: FileUploadProps) {
+  const { t } = useTranslation();
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const validateFile = (file: File): string | null => {
-    if (file.type !== 'application/pdf') {
-      return 'Please upload a PDF file';
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      return 'File size must be less than 10MB';
-    }
+    if (file.type !== 'application/pdf') return t('upload.onlyPdf');
+    if (file.size > 10 * 1024 * 1024) return t('upload.tooLarge');
     return null;
   };
 
@@ -34,10 +29,11 @@ export function FileUpload({ onUpload, isUploading }: FileUploadProps) {
       try {
         await onUpload(file);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Upload failed');
+        setError(err instanceof Error ? err.message : t('upload.failed'));
       }
     },
-    [onUpload]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [onUpload, t],
   );
 
   const handleDrop = useCallback(
@@ -45,11 +41,9 @@ export function FileUpload({ onUpload, isUploading }: FileUploadProps) {
       e.preventDefault();
       setIsDragging(false);
       const file = e.dataTransfer.files[0];
-      if (file) {
-        handleFile(file);
-      }
+      if (file) handleFile(file);
     },
-    [handleFile]
+    [handleFile],
   );
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -57,63 +51,179 @@ export function FileUpload({ onUpload, isUploading }: FileUploadProps) {
     setIsDragging(true);
   };
 
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleFile(file);
-    }
-  };
+  const handleDragLeave = () => setIsDragging(false);
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>Upload Password-Protected PDF</CardTitle>
-        <CardDescription>
-          Upload a PDF file with a password and we'll attempt to crack it
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div className="panel upload-panel-padding">
+      {/* Hidden file input */}
+      <input
+        type="file"
+        id="file-upload"
+        style={{ display: 'none' }}
+        accept=".pdf,application/pdf"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) handleFile(file);
+          e.target.value = '';
+        }}
+        disabled={isUploading}
+        aria-label="Upload PDF file"
+      />
+
+      {/* Drop zone */}
+      <label
+        htmlFor="file-upload"
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        className={`drop-zone drop-zone-label${isDragging ? ' dragging' : ''}`}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: isUploading ? 'not-allowed' : 'pointer',
+          opacity: isUploading ? 0.55 : 1,
+          pointerEvents: isUploading ? 'none' : 'auto',
+          userSelect: 'none',
+          gap: '22px',
+          transition: 'opacity 0.2s ease',
+        }}
+        aria-disabled={isUploading}
+      >
+        {/* Lock icon container */}
         <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          className={`
-            border-2 border-dashed rounded-lg p-12 text-center transition-colors
-            ${isDragging ? 'border-gray-900 bg-gray-50' : 'border-gray-300'}
-            ${isUploading ? 'opacity-50 pointer-events-none' : 'cursor-pointer hover:border-gray-400'}
-          `}
+          className="drop-zone-icon"
+          style={{
+            width: '76px',
+            height: '76px',
+            borderRadius: '50%',
+            background: 'rgba(255, 45, 85, 0.08)',
+            border: '1px solid rgba(255, 45, 85, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease',
+            ...(isDragging
+              ? {
+                  boxShadow: '0 0 32px rgba(255, 45, 85, 0.4)',
+                  borderColor: 'rgba(255, 45, 85, 0.7)',
+                  background: 'rgba(255, 45, 85, 0.12)',
+                }
+              : {}),
+          }}
         >
-          <input
-            type="file"
-            id="file-upload"
-            className="hidden"
-            accept=".pdf,application/pdf"
-            onChange={handleFileInput}
-            disabled={isUploading}
-          />
-          <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center">
-            <Upload className="w-12 h-12 text-gray-400 mb-4" />
-            <p className="text-lg font-medium text-gray-700 mb-2">
-              {isUploading ? 'Uploading...' : 'Drop your PDF here'}
-            </p>
-            <p className="text-sm text-gray-500 mb-4">or</p>
-            <Button type="button" disabled={isUploading}>
-              Browse Files
-            </Button>
-            <p className="text-xs text-gray-400 mt-4">PDF files only, max 10MB</p>
-          </label>
+          {isUploading ? (
+            <svg
+              width="34"
+              height="34"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--color-red)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ animation: 'spin-slow 1s linear infinite' }}
+              aria-hidden="true"
+            >
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+          ) : (
+            <Lock size={34} color="var(--color-red)" aria-hidden="true" />
+          )}
         </div>
 
-        {error && (
-          <Alert variant="destructive" className="mt-4">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-      </CardContent>
-    </Card>
+        {/* Copy */}
+        <div style={{ textAlign: 'center' }}>
+          <p
+            style={{
+              fontFamily: 'monospace',
+              fontSize: '15px',
+              fontWeight: 700,
+              color: 'var(--color-text)',
+              margin: '0 0 6px 0',
+              letterSpacing: '0.01em',
+            }}
+          >
+            {isUploading
+              ? t('upload.uploading')
+              : isDragging
+                ? t('upload.dropIt')
+                : t('upload.dropHere')}
+          </p>
+          <p
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-muted)',
+              margin: '0 0 20px 0',
+              fontFamily: 'monospace',
+            }}
+          >
+            {t('upload.orBrowse')}
+          </p>
+
+          {!isUploading && (
+            <span
+              className="btn-red"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '9px 24px',
+                fontSize: '13px',
+                fontFamily: 'monospace',
+                letterSpacing: '0.05em',
+              }}
+            >
+              {t('upload.selectFile')}
+            </span>
+          )}
+        </div>
+
+        <p
+          style={{
+            fontSize: '11px',
+            color: 'var(--color-muted)',
+            fontFamily: 'monospace',
+            margin: 0,
+            opacity: 0.5,
+          }}
+        >
+          {t('upload.hint')}
+        </p>
+      </label>
+
+      {/* Validation / upload error */}
+      {error && (
+        <div
+          role="alert"
+          style={{
+            marginTop: '16px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '10px',
+            padding: '12px 16px',
+            borderRadius: '10px',
+            background: 'rgba(255, 45, 85, 0.07)',
+            border: '1px solid rgba(255, 45, 85, 0.22)',
+          }}
+        >
+          <FileWarning
+            size={15}
+            color="var(--color-red)"
+            style={{ flexShrink: 0, marginTop: '1px' }}
+            aria-hidden="true"
+          />
+          <span
+            style={{
+              fontFamily: 'monospace',
+              fontSize: '13px',
+              color: 'var(--color-red)',
+            }}
+          >
+            {error}
+          </span>
+        </div>
+      )}
+    </div>
   );
 }
