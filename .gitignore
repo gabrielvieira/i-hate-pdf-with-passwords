@@ -35,3 +35,10 @@ backend/vendor/
 # test folders
 backend/upload/
 backend/result/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.vite

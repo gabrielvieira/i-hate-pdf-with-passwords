@@ -1,0 +1,64 @@
+{
+  "statusBadge": "pdf cracker — online",
+  "title": "i hate pdf",
+  "titleAccent": "with passwords",
+  "tagline": "brute-force your way to freedom",
+  "tryAnother": "try another file",
+  "upload": {
+    "onlyPdf": "only pdf files are accepted",
+    "tooLarge": "file must be smaller than 10mb",
+    "failed": "upload failed",
+    "uploading": "uploading...",
+    "dropIt": "drop it.",
+    "dropHere": "drop your locked pdf here",
+    "orBrowse": "or click to browse",
+    "selectFile": "select file",
+    "hint": "pdf only — max 10mb"
+  },
+  "status": {
+    "cracking": "cracking",
+    "crackingDescription": "running dictionary & brute-force attack",
+    "progress": "progress",
+    "complexityHint": "this may take a few minutes depending on password complexity",
+    "crackedTitle": "password cracked.",
+    "crackedDescription": "your pdf has been unlocked and is ready to download",
+    "failedTitle": "crack failed.",
+    "failedDescription": "the password was too strong for our current wordlist.",
+    "failedHint": "try a different file or a weaker password."
+  },
+  "download": {
+    "downloading": "downloading...",
+    "downloadButton": "download unlocked pdf",
+    "uploadAnother": "upload another",
+    "failed": "download failed"
+  },
+  "contact": {
+    "buttonLabel": "contact",
+    "openLabel": "open contact form",
+    "close": "close contact form",
+    "title": "get in touch.",
+    "subtitle": "drop a message — we'll get back to you.",
+    "fields": {
+      "name": "name",
+      "email": "email",
+      "message": "message"
+    },
+    "placeholders": {
+      "name": "your name",
+      "email": "you@example.com",
+      "message": "what's on your mind?"
+    },
+    "errors": {
+      "nameRequired": "name is required.",
+      "emailRequired": "email is required.",
+      "emailInvalid": "enter a valid email address.",
+      "messageRequired": "message is required."
+    },
+    "submit": "send message",
+    "success": {
+      "title": "message sent.",
+      "description": "thanks for reaching out — we'll reply soon.",
+      "sendAnother": "send another"
+    }
+  }
+}
