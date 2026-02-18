@@ -10,7 +10,7 @@
     "failed": "falha no envio",
     "uploading": "enviando...",
     "dropIt": "solte aqui.",
-    "dropHere": "solte seu pdf protegido aqui",
+    "dropHere": "Arraste seu pdf protegido aqui",
     "orBrowse": "ou clique para procurar",
     "selectFile": "selecionar arquivo",
     "hint": "apenas pdf — máx 10mb"
@@ -20,7 +20,7 @@
     "crackingDescription": "executando ataque de dicionário e força bruta",
     "progress": "progresso",
     "complexityHint": "isso pode levar alguns minutos dependendo da complexidade da senha",
-    "crackedTitle": "senha quebrada.",
+    "crackedTitle": "Senha quebrada.",
     "crackedDescription": "seu pdf foi desbloqueado e está pronto para download",
     "failedTitle": "falha na quebra.",
     "failedDescription": "a senha era forte demais para nossa lista de palavras.",
@@ -31,6 +31,48 @@
     "downloadButton": "baixar pdf desbloqueado",
     "uploadAnother": "enviar outro",
     "failed": "falha no download"
+  },
+  "howItWorks": {
+    "buttonLabel": "como funciona",
+    "openLabel": "abrir explicação de como funciona",
+    "close": "fechar como funciona",
+    "title": "// como_funciona.txt",
+    "subtitle": "pdf2john + hashcat + qpdf",
+    "process": {
+      "heading": "o processo",
+      "steps": [
+        "Você envia um PDF protegido por senha (máx 10 MB). Calculamos o SHA-256 do arquivo — uploads duplicados reutilizam o mesmo job.",
+        "pdf2john extrai o hash de criptografia embutido no PDF.",
+        "hashcat executa um ataque de força bruta com máscaras numéricas (?d), tentando todas as combinações de 1 a 8 dígitos em sequência.",
+        "Encontrada a senha, qpdf descriptografa o arquivo. O PDF desbloqueado fica disponível para download."
+      ]
+    },
+    "limitations": {
+      "heading": "limitações",
+      "items": [
+        "Apenas senhas totalmente numéricas são suportadas. Senhas alfabéticas, mistas ou com caracteres especiais não serão quebradas.",
+        "O comprimento máximo suportado é 8 dígitos.",
+        "O tempo de processamento cresce exponencialmente — uma senha de 6 dígitos quebra em segundos, uma de 8 pode levar minutos.",
+        "O status dos arquivos é mantido em memória e perdido ao reiniciar o servidor.",
+        "Os arquivos não são deletados automaticamente — não envie documentos sensíveis."
+      ]
+    }
+  },
+  "manifesto": {
+    "buttonLabel": "manifesto",
+    "openLabel": "abrir manifesto",
+    "close": "fechar manifesto",
+    "title": "// manifesto.txt",
+    "subtitle": "por que construímos isso",
+    "paragraphs": [
+      "PDFs com senha são um imposto de fricção sobre os seus próprios documentos.",
+      "O PDF protegido por senha médio tem uma senha numérica de 4 dígitos. Definida anos atrás. Por alguém que não trabalha mais lá.",
+      "Você não perdeu o conteúdo — alguém apenas colocou um cadeado em algo que já era seu.",
+      "Construímos isso porque estávamos cansados de mandar email dizendo 'oi, qual é a senha?' e esperar três dias por uma resposta que nunca chegava.",
+      "Sem software proprietário. Sem cadastro. Sem armazenamento em nuvem. Solta o arquivo, quebra a senha, baixa o PDF.",
+      "Senhas protegem segredos. Seu relatório trimestral não é um segredo."
+    ],
+    "signature": "— o time que odeia pdf com senha"
   },
   "contact": {
     "buttonLabel": "contato",

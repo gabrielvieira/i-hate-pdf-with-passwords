@@ -421,11 +421,6 @@ export function ContactButton() {
         aria-expanded={isOpen}
         className="btn-ghost"
         style={{
-          position: 'fixed',
-          bottom: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 10,
           display: 'inline-flex',
           alignItems: 'center',
           gap: '7px',

@@ -2,6 +2,8 @@ package pdf
 
 import (
 	"bytes"
+	"context"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -45,17 +47,20 @@ func getPDFHash(sourceDir, filename string) (string, error) {
 	return hashStr, nil
 }
 
-func CrackPassword(sourceDir, filename string) (string, error) {
+func CrackPassword(ctx context.Context, sourceDir, filename string) (string, error) {
 	hashStr, err := getPDFHash(sourceDir, filename)
 	if err != nil {
 		return "", fmt.Errorf("pdf2john failed: %w", err)
 	}
 	hashMode := detectHashMode(hashStr)
-	// Try different lengths from 1 to 12
-	for length := 1; length <= 12; length++ {
+	// Try different lengths from 1 to 8
+	for length := 1; length <= 8; length++ {
 		mask := strings.Repeat("?d", length)
-		hashcatCmd := exec.Command("hashcat", "-m", hashMode, "-a", "3", hashStr, mask)
-		hashcatCmd.Run() // Ignore errors, check with --show
+		hashcatCmd := exec.CommandContext(ctx, "hashcat", "-m", hashMode, "-a", "3", hashStr, mask)
+		err := hashcatCmd.Run() // Ignore errors, check with --show
+		if err != nil && ctx.Err() != nil {
+			return "", errors.New("cracking canceled, it takes too long")
+		}
 		// Check if password was found
 		showCmd := exec.Command("hashcat", "-m", hashMode, hashStr, "--show")
 		output, err := showCmd.Output()
