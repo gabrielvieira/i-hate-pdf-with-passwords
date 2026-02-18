@@ -5,6 +5,9 @@ import { StatusCard } from './components/StatusCard';
 import { DownloadButton } from './components/DownloadButton';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { ContactButton } from './components/ContactModal';
+import { ManifestoButton } from './components/ManifestoModal';
+import { HowItWorksButton } from './components/HowItWorksModal';
+import { Github } from 'lucide-react';
 import { uploadPDF } from './services/api';
 import type { PDFStatus } from './types/api';
 
@@ -50,7 +53,42 @@ function App() {
       <div className="bg-mesh" aria-hidden="true" />
 
       <LanguageSwitcher />
-      <ContactButton />
+
+      {/* Fixed bottom bar: Contact + Manifesto */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 10,
+          display: 'flex',
+          gap: '8px',
+        }}
+      >
+        <ContactButton />
+        <ManifestoButton />
+        <HowItWorksButton />
+        <a
+          href="https://github.com/gabrielvieira/i-hate-pdf-with-passwords"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-ghost"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '7px',
+            padding: '8px 14px',
+            fontSize: '12px',
+            fontFamily: 'monospace',
+            letterSpacing: '0.06em',
+            textDecoration: 'none',
+          }}
+        >
+          <Github size={14} aria-hidden="true" />
+          github
+        </a>
+      </div>
 
       <div
         style={{ position: 'relative', zIndex: 1 }}
@@ -117,7 +155,6 @@ function App() {
               letterSpacing: '0.08em',
             }}
           >
-            {t('tagline')}
           </p>
         </header>
 

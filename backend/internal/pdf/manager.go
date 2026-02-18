@@ -1,9 +1,11 @@
 package pdf
 
 import (
+	"context"
 	"fmt"
 	"i-hate-pdf-with-passwords/internal/config"
 	"sync"
+	"time"
 
 	"go.uber.org/zap"
 )
@@ -25,7 +27,7 @@ type Manager struct {
 func NewPDFManager(logger *zap.Logger, config *config.Config) *Manager {
 	return &Manager{
 		fileStatuses: make(map[string]string),
-		processChan:  make(chan string, 5), // limit 5 simultaneous process
+		processChan:  make(chan string),
 		logger:       logger,
 		config:       config,
 	}
@@ -54,7 +56,7 @@ func (m *Manager) AddToCrackQueue(filename string) string {
 func (m *Manager) GetStatus(filename string) (string, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	
+
 	status, ok := m.fileStatuses[filename]
 	if !ok {
 		return "", fmt.Errorf("status not found for file: %s", filename)
@@ -64,18 +66,24 @@ func (m *Manager) GetStatus(filename string) (string, error) {
 
 func (m *Manager) process() {
 	for filename := range m.processChan {
-		password, err := CrackPassword(m.config.UploadDir, filename)
-		if err != nil {
-			m.setStatus(filename, StatusFailed)
-			m.logger.Error("Failed to crack password", zap.String("filename", filename), zap.Error(err))
-			continue
-		}
-		err = DecryptPDF(m.config.UploadDir, m.config.ResultDir, filename, password)
-		if err != nil {
-			m.setStatus(filename, StatusFailed)
-			m.logger.Error("Failed to decrypt PDF", zap.String("filename", filename), zap.Error(err))
-			continue
-		}
-		m.setStatus(filename, StatusCracked)
+		go func() {
+			// cancel long crack operations
+			ctx, cancel := context.WithTimeout(context.Background(), time.Minute*5)
+			defer cancel()
+			password, err := CrackPassword(ctx, m.config.UploadDir, filename)
+			if err != nil {
+				m.setStatus(filename, StatusFailed)
+				m.logger.Error("Failed to crack password", zap.String("filename", filename), zap.Error(err))
+				return
+			}
+			err = DecryptPDF(m.config.UploadDir, m.config.ResultDir, filename, password)
+			if err != nil {
+				m.setStatus(filename, StatusFailed)
+				m.logger.Error("Failed to decrypt PDF", zap.String("filename", filename), zap.Error(err))
+				return
+			}
+			m.logger.Info("PDF decrypted successfully", zap.String("filename", filename))
+			m.setStatus(filename, StatusCracked)
+		}()
 	}
 }

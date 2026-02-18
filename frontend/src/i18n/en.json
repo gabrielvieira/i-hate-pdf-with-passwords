@@ -32,6 +32,48 @@
     "uploadAnother": "upload another",
     "failed": "download failed"
   },
+  "howItWorks": {
+    "buttonLabel": "how it works",
+    "openLabel": "open how it works explanation",
+    "close": "close how it works",
+    "title": "// how_it_works.txt",
+    "subtitle": "pdf2john + hashcat + qpdf",
+    "process": {
+      "heading": "the process",
+      "steps": [
+        "You upload a password-protected PDF (max 10 MB). We hash the file with SHA-256 — duplicate uploads reuse the same job.",
+        "pdf2john extracts the encryption hash embedded inside the PDF.",
+        "hashcat runs a brute-force attack using numeric masks (?d), trying every combination from 1 to 8 digits in sequence.",
+        "Once the password is found, qpdf decrypts the file. The unlocked PDF is ready for download."
+      ]
+    },
+    "limitations": {
+      "heading": "limitations",
+      "items": [
+        "Only all-numeric passwords are supported. Alphabetic, mixed, or special-character passwords will not be cracked.",
+        "Max password length is 8 digits. An 8-digit password has 100 million combinations and may take several minutes.",
+        "Processing time grows exponentially with length — a 6-digit password cracks in seconds, an 8-digit one may take minutes.",
+        "File status is kept in memory and lost on server restart.",
+        "Files are not deleted automatically — do not upload sensitive documents."
+      ]
+    }
+  },
+  "manifesto": {
+    "buttonLabel": "manifesto",
+    "openLabel": "open manifesto",
+    "close": "close manifesto",
+    "title": "// manifesto.txt",
+    "subtitle": "why we built this",
+    "paragraphs": [
+      "PDFs with passwords are a friction tax on your own documents.",
+      "The average password-protected PDF has a 4-digit numeric password. Set years ago. By someone who no longer works there.",
+      "You didn't lose the content — someone just put a padlock on something that was already yours.",
+      "We built this because we were tired of emailing 'hey, what's the password?' and waiting three days for a reply that never came.",
+      "No proprietary software. No sign-up. No cloud storage. Drop it, crack it, download it.",
+      "Passwords protect secrets. Your quarterly report is not a secret."
+    ],
+    "signature": "— the team that hates pdf passwords"
+  },
   "contact": {
     "buttonLabel": "contact",
     "openLabel": "open contact form",

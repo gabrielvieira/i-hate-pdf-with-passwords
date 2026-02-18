@@ -29,22 +29,6 @@ function CrackingText() {
 
 export function StatusCard({ filename, status, onStatusUpdate }: StatusCardProps) {
   const { t } = useTranslation();
-  const [progress, setProgress] = useState(0);
-
-  // Simulate incremental progress while cracking
-  useEffect(() => {
-    if (status === 'pending') {
-      const interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 95) return 95;
-          return prev + Math.random() * 8;
-        });
-      }, 1000);
-      return () => clearInterval(interval);
-    } else if (status === 'cracked') {
-      setProgress(100);
-    }
-  }, [status]);
 
   // Poll API for status changes
   useEffect(() => {
@@ -65,8 +49,6 @@ export function StatusCard({ filename, status, onStatusUpdate }: StatusCardProps
       return () => clearInterval(pollInterval);
     }
   }, [filename, status, onStatusUpdate]);
-
-  const clampedProgress = Math.min(100, Math.max(0, progress));
 
   if (status === 'pending') {
     return (
@@ -141,7 +123,6 @@ export function StatusCard({ filename, status, onStatusUpdate }: StatusCardProps
                 margin: 0,
               }}
             >
-              {t('status.crackingDescription')}
             </p>
           </div>
         </div>
@@ -156,7 +137,7 @@ export function StatusCard({ filename, status, onStatusUpdate }: StatusCardProps
             borderRadius: '8px',
             background: 'rgba(255, 255, 255, 0.03)',
             border: '1px solid var(--color-border)',
-            marginBottom: '20px',
+            marginBottom: '16px',
           }}
         >
           <FileText size={14} color="var(--color-muted)" aria-hidden="true" />
@@ -172,51 +153,6 @@ export function StatusCard({ filename, status, onStatusUpdate }: StatusCardProps
           >
             {filename}
           </span>
-        </div>
-
-        {/* Progress bar with scan animation */}
-        <div style={{ marginBottom: '10px' }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '8px',
-            }}
-          >
-            <span
-              style={{
-                fontFamily: 'monospace',
-                fontSize: '11px',
-                color: 'var(--color-muted)',
-                letterSpacing: '0.05em',
-              }}
-            >
-              {t('status.progress')}
-            </span>
-            <span
-              style={{
-                fontFamily: 'monospace',
-                fontSize: '11px',
-                color: 'var(--color-red)',
-                fontWeight: 600,
-              }}
-            >
-              {Math.round(clampedProgress)}%
-            </span>
-          </div>
-
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{ width: `${clampedProgress}%` }}
-              role="progressbar"
-              aria-valuenow={Math.round(clampedProgress)}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            />
-            <div className="scan-bar" aria-hidden="true" />
-          </div>
         </div>
 
         <p
@@ -283,24 +219,6 @@ export function StatusCard({ filename, status, onStatusUpdate }: StatusCardProps
               {t('status.crackedDescription')}
             </p>
           </div>
-        </div>
-
-        {/* Progress bar — full, green */}
-        <div className="progress-track" style={{ marginBottom: '16px' }}>
-          <div
-            style={{
-              height: '100%',
-              width: '100%',
-              background: 'linear-gradient(90deg, #00b347 0%, #00e676 60%, #69ffb1 100%)',
-              borderRadius: '999px',
-              boxShadow: '0 0 10px rgba(0, 230, 118, 0.5)',
-              transition: 'width 0.5s ease',
-            }}
-            role="progressbar"
-            aria-valuenow={100}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          />
         </div>
 
         {/* Filename */}

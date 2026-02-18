@@ -39,7 +39,6 @@ func (a *API) RegisterRoutes(r *gin.Engine) {
 }
 
 func (a *API) uploadPDF(c *gin.Context) {
-
 	uploadedFile, err := c.FormFile("pdf")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "No file uploaded"})
@@ -77,7 +76,7 @@ func (a *API) uploadPDF(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
 		return
 	}
-	filename := fmt.Sprintf("%s.pdf", hashString)
+	filename := fmt.Sprintf("%s.pdf", hashString[:24])
 	path := filepath.Join(a.config.UploadDir, filename)
 
 	if err := c.SaveUploadedFile(uploadedFile, path); err != nil {
